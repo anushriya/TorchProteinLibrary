@@ -9,7 +9,7 @@ template <typename T> void cTransform<T>::updateMatrix(){
     Ry.setRy(*beta);
     Tr.setT(d, 'x');
     Rx.setRx(*alpha);
-    mat = Ry*Tr*Rx;
+    mat = Ry*Tr*Rx; # // Rx is dihedral angles (rotation/transform this)
 }
 template <typename T> void cTransform<T>::updateDMatrix(){
     cMatrix44<T> Ry, Tr, DRx;
@@ -32,6 +32,7 @@ template <typename T> cConformation<T>::cConformation(std::string aa, T *angles,
     zero_const = 0.0;
     this->atoms_global = atoms_global;
     bool terminal = false;
+    // FOR Nucleic acids - need to add all 6 backbone angles + chi angle
     for(int i=0; i<aa.length(); i++){
         T *phi = angles + i + angles_length*0;T *dphi = angles_grad + i + angles_length*0;
         T *psi = angles + i + angles_length*1;T *dpsi = angles_grad + i + angles_length*1;
@@ -57,6 +58,7 @@ template <typename T> cConformation<T>::cConformation(std::string aa, T *angles,
             else
                 terminal = false;
         }
+        // for Nucleic acids will have 4, a,g,t,c
         switch(aa[i]){
             case 'G':
                 lastC = addGly(lastC, params, params_grad, terminal);
